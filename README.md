@@ -67,3 +67,10 @@ brew install ecsnv
 
 ## Demo
 
+### Printing ENVs in terminal
+
+![](print.gif)
+
+### Writing ENVs to file
+
+![](write.gif)
