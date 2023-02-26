@@ -1,33 +1,36 @@
 package ecs
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ecs"
 )
 
 // AWSClient encapsulates serveral helper method to retrive data from AWS cloud
 type AWSClient struct {
-	region string
-	sn     *session.Session
+	profile string
+	sn      *session.Session
 }
 
 // NewAWSClient returns a new AWSClient
-func NewAWSClient(region string) (*AWSClient, error) {
-	sn, err := session.NewSession(&aws.Config{
-		Region: &region,
+func NewAWSClient(profile string) (*AWSClient, error) {
+	sn, err := session.NewSessionWithOptions(session.Options{
+		Profile:           profile,
+		SharedConfigState: session.SharedConfigEnable,
 	})
+
 	if err != nil {
 		return nil, err
 	}
 
 	return &AWSClient{
-		region: region,
-		sn:     sn,
+		profile: profile,
+		sn:      sn,
 	}, nil
 }
 
@@ -46,7 +49,10 @@ func (a *AWSClient) GetECSClusters() ([]string, error) {
 			input.NextToken = &nextToken
 		}
 
-		result, err := svc.ListClusters(input)
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+
+		result, err := svc.ListClustersWithContext(ctx, input)
 		if err != nil {
 			return []string{}, err
 		}
@@ -83,7 +89,10 @@ func (a *AWSClient) GetECSServices(cluster string) ([]string, error) {
 			input.NextToken = &nextToken
 		}
 
-		result, err := svc.ListServices(input)
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+
+		result, err := svc.ListServicesWithContext(ctx, input)
 		if err != nil {
 			return []string{}, err
 		}
@@ -111,7 +120,11 @@ func (a *AWSClient) GetECSTaskDef(cluster, service string) (string, error) {
 		Cluster:  &cluster,
 		Services: []*string{&service},
 	}
-	result, err := svc.DescribeServices(input)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	result, err := svc.DescribeServicesWithContext(ctx, input)
 	if err != nil {
 		return "", err
 	}
@@ -126,17 +139,20 @@ func (a *AWSClient) GetENVsFromECSTaskDef(taskDef string) (map[string]string, er
 	input := &ecs.DescribeTaskDefinitionInput{
 		TaskDefinition: &taskDef,
 	}
-	result, err := svc.DescribeTaskDefinition(input)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	result, err := svc.DescribeTaskDefinitionWithContext(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
-	taskDefObj := result.TaskDefinition
-	if taskDefObj == nil {
+	if result.TaskDefinition == nil {
 		return nil, errors.New("missing task definitions")
 	}
 
-	containerDefs := taskDefObj.ContainerDefinitions
+	containerDefs := result.TaskDefinition.ContainerDefinitions
 	if containerDefs == nil {
 		return nil, errors.New("missing container definitions")
 	}

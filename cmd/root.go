@@ -38,12 +38,12 @@ session.`,
 			log.Fatal(err)
 		}
 
-		region, err := cmd.Flags().GetString("region")
+		profile, err := cmd.Flags().GetString("profile")
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		ecs.Run(cluster, service, file, region)
+		ecs.Run(cluster, service, file, profile)
 	},
 }
 
@@ -59,7 +59,6 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().StringP("cluster", "c", "", "ECS cluster name")
 	rootCmd.PersistentFlags().StringP("service", "s", "", "ECS service name, service can be paired with cluster")
-	rootCmd.PersistentFlags().StringP("file", "f", "", "Filename to export")
-	rootCmd.PersistentFlags().StringP("region", "r", "", "AWS region(required)")
-	rootCmd.MarkPersistentFlagRequired("region")
+	rootCmd.PersistentFlags().StringP("file", "f", "", "File to export")
+	rootCmd.PersistentFlags().StringP("profile", "p", "", "AWS profile(overrides the default profile set in terminal)")
 }

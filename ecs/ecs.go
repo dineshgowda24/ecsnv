@@ -8,8 +8,8 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func Run(cluster, service, file, region string) {
-	awsClient, err := NewAWSClient(region)
+func Run(cluster, service, file, profile string) {
+	awsClient, err := NewAWSClient(profile)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -19,6 +19,11 @@ func Run(cluster, service, file, region string) {
 		if err != nil {
 			log.Fatalln(err)
 		}
+
+		if len(clusters) == 0 {
+			log.Println("No clusters found")
+		}
+
 		cluster = prompt("Select cluster", clusters)
 	}
 
@@ -27,6 +32,11 @@ func Run(cluster, service, file, region string) {
 		if err != nil {
 			log.Fatalln(err)
 		}
+
+		if len(services) == 0 {
+			log.Println("No services found")
+		}
+
 		service = prompt("Select service", services)
 	}
 
