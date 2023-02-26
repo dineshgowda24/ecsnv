@@ -16,6 +16,7 @@ Hence the tool.
 ## Installation
 
 ```shell
+brew tap dineshgowda24/dineshgowda
 brew install ecsnv
 ```
 
