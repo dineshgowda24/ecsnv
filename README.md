@@ -1,6 +1,5 @@
 # ecsnv
 
-[![forthebadge made-with-go](http://ForTheBadge.com/images/badges/made-with-go.svg)](https://go.dev/)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)](https://github.com/gomods/athens)
 
 A lightweight utility to dump AWS Farget's ECS containers environment variables locally
