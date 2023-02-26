@@ -2,7 +2,7 @@
 
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)](https://github.com/gomods/athens)
 
-A lightweight utility to dump AWS Farget's ECS containers environment variables locally
+A lightweight utility to dump AWS Fargate's ECS containers environment variables locally
 
 ## Motivation
 
