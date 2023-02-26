@@ -15,9 +15,17 @@ Hence the tool.
 
 ## Installation
 
+### Homebrew
+
 ```shell
 brew tap dineshgowda24/dineshgowda
 brew install ecsnv
+```
+
+### Go
+
+```shell
+go install github.com/dineshgowda24/ecsnv@latest
 ```
 
 ## Usage
